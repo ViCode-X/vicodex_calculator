@@ -82,3 +82,6 @@ if (cidr === 32) {
     usableHosts = totalHosts - 2;
 }
 ```
+
+> [!WARNING]
+> **Disclaimer:** This Vicodex subnet calculator is for educational purposes only. It can be accessed at [here](https://vicode-x.github.io/vicodex_calculator/)
