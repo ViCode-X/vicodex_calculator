@@ -84,4 +84,4 @@ if (cidr === 32) {
 ```
 
 > [!WARNING]
-> System restricted to educational parameters. Access initialized at [Vicodex Calculator Target](https://vicode-x.github.io/vicodex_calculator/).
+> System restricted to educational purposes. Access at [Vicodex Calculator](https://vicode-x.github.io/vicodex_calculator/).
