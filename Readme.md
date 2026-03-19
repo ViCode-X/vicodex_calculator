@@ -18,19 +18,19 @@ Subnet calculation requires absolute precision in processing IPv4 addresses and 
 
 Project structure is separated into three distinct operational layers: structural, visual, and logical.
 
-### [x] Task 1: Structural Layer (index.html)
+### Task 1: Structural Layer (index.html)
 **Objective:** Define the semantic DOM architecture.
 *   Implement standard `<header>`, `<main>`, and `<form>` layout.
 *   Deploy input interfaces for IP Address and Subnet parameters.
 *   Establish a rigid grid layout for output metric displays (Network Address, Broadcast Address, Host Count).
 
-### [x] Task 2: Visual Layer (styles.css)
+### Task 2: Visual Layer (styles.css)
 **Objective:** Apply the design system.
 *   Implement pure information density aesthetics.
 *   Enforce clear visibility on input states and dynamic validation warnings.
 *   Maintain layout integrity across variable viewport dimensions.
 
-### [x] Task 3: Logic Layer (script.js)
+### Task 3: Logic Layer (script.js)
 **Objective:** Deploy the core calculation engine.
 *   **Data Conversion:** `ipToInt()` and `intToIp()` functions for string-to-integer translations.
 *   **Input Validation:** Regex and numeric bounds checking (0-255) for octet verification.
