@@ -1,74 +1,74 @@
-# 🌐 Vicodex Subnet Calculator Documentation
+# VICODEX SUBNET CALCULATOR
 
-## 1. 📖 Overview
-This document outlines the implementation details, thought process, and task breakdown for the Vicodex Subnet Calculator web application. 
+## 1. SYSTEM OVERVIEW
+This document outlines the implementation architecture, execution logic, and operational parameters for the Vicodex Subnet Calculator application.
 
-## 2. 🧠 Thought Process & Design
-Building a subnet calculator requires careful handling of IPv4 addresses and varying subnet masks (both dot-decimal and CIDR notation). The core logic revolves around bitwise operations, converting human-readable IP strings into 32-bit integers to perform calculations like bit masking, and then converting them back to formats users can read.
+## 2. ARCHITECTURE & DESIGN
+Subnet calculation requires absolute precision in processing IPv4 addresses and varying subnet masks (dot-decimal and CIDR notation). The core operational logic executes via bitwise transformations, converting human-readable string interfaces into 32-bit unsigned integers for masking operations, then restructuring the output for user consumption.
 
-### 🔑 Key Considerations:
-*   **🧮 Bitwise Arithmetic:** IP routing fundamentally works via bitwise AND operations between the IP and the mask. Simulating this in Javascript requires ensuring we use unsigned 32-bit integers (e.g., using `>>> 0`).
-*   **⌨️ Input Flexibility:** Users might type `/24` or `255.255.255.0`. The script must seamlessly parse either.
-*   **⚠️ Edge Cases:**
-    *   `/32` (Single Host): Network, broadcast, first, and last host are all the exact same address.
-    *   `/31` (Point-to-Point, RFC 3021): Only 2 addresses exist, and both are usable as hosts for point-to-point router links.
-    *   **🚫 Invalid Inputs:** We need immediate, non-blocking feedback under the inputs when the user types an invalid IP.
+### Key Operational Parameters:
+*   **Bitwise Arithmetic:** IP routing operates strictly via bitwise AND operations. JavaScript simulation requires forced unsigned 32-bit integer conversion (utilizing `>>> 0`).
+*   **Input Handling:** The system must process both CIDR (`/24`) and dot-decimal (`255.255.255.0`) notations without operational interruption.
+*   **Edge Case Processing:**
+    *   `/32` (Single Host): Network, broadcast, first, and last host resolve to the exact same address.
+    *   `/31` (Point-to-Point, RFC 3021): Constrained to 2 addresses, both designated as usable hosts for point-to-point router links.
+    *   **Invalid State Recovery:** The system mandates immediate, non-blocking validation feedback when processing malformed input strings.
 
-## 3. 🗺️ Implementation Plan & Tasks
+## 3. IMPLEMENTATION TASKS
 
-The project is broken down into three main components: HTML structure, CSS styling, and JavaScript logic.
+Project structure is separated into three distinct operational layers: structural, visual, and logical.
 
-### [x] 🏗️ Task 1: HTML Structure (`index.html`)
-**Goal:** Create the semantic skeleton of the application.
-*   Use standard `<header>`, `<main>`, and `<form>` tags.
-*   Setup input fields for the `IP Address` and `Subnet Mask or CIDR`.
-*   Create a clean grid/flexbox layout for the result cards (Network Address, Broadcast Address, Usable Hosts, etc.).
+### [x] Task 1: Structural Layer (index.html)
+**Objective:** Define the semantic DOM architecture.
+*   Implement standard `<header>`, `<main>`, and `<form>` layout.
+*   Deploy input interfaces for IP Address and Subnet parameters.
+*   Establish a rigid grid layout for output metric displays (Network Address, Broadcast Address, Host Count).
 
-### [x] 🎨 Task 2: CSS Styling (`styles.css`)
-**Goal:** Make the application visually appealing and responsive.
-*   Implement a modern aesthetic (using sans-serif fonts, subtle shadows, clean borders).
-*   Ensure inputs are clearly visible and error states are dynamically highlighted.
-*   Use a responsive layout so the result cards stack cleanly on smaller screens.
+### [x] Task 2: Visual Layer (styles.css)
+**Objective:** Apply the design system.
+*   Implement pure information density aesthetics.
+*   Enforce clear visibility on input states and dynamic validation warnings.
+*   Maintain layout integrity across variable viewport dimensions.
 
-### [x] ⚙️ Task 3: JavaScript Logic (`script.js`)
-**Goal:** Implement the core calculation engine and DOM manipulation.
-*   **🔄 IP Conversion Utilities:** `ipToInt()` and `intToIp()` to transition between strings and 32-bit numbers.
-*   **✅ Validation:** Regex and numeric bounds checking (0-255) for valid IP octets.
-*   **🔍 Mask Parsing:** `parseMask()` to handle both CIDR (e.g., `/24`) and dot-decimal masks and convert them to their CIDR integer equivalent.
-*   **🚀 Core Calculator (`calculate()`):**
-    *   Perform a bitwise `&` logic pass between IP and Mask to find the Network Address.
-    *   Perform a bitwise `|` with the inverse mask to find the Broadcast Address.
-    *   Compute usable hosts using $2^{(32 - CIDR)} - 2$.
-    *   Handle edge cases for `/31` and `/32`.
-*   **👂 Event Listeners:** Attach `input` event listeners on the form fields to trigger the `calculate()` process in real-time as the user types.
+### [x] Task 3: Logic Layer (script.js)
+**Objective:** Deploy the core calculation engine.
+*   **Data Conversion:** `ipToInt()` and `intToIp()` functions for string-to-integer translations.
+*   **Input Validation:** Regex and numeric bounds checking (0-255) for octet verification.
+*   **Mask Processing:** `parseMask()` execution to normalize mixed-format subnets into CIDR integer equivalents.
+*   **Execution Engine (`calculate()`):**
+    *   Execute bitwise `&` logic to isolate the Network Address.
+    *   Execute bitwise `|` with inverse mask to isolate the Broadcast Address.
+    *   Compute usable host capacity via $2^{(32 - CIDR)} - 2$.
+    *   Apply overriding logic for `/31` and `/32` constraints.
+*   **Event Handling:** Bind `input` listeners for real-time execution feedback.
 
-## 4. 🔬 Code Deep Dive: `script.js`
+## 4. ENGINE DOCUMENTATION: script.js
 
-### 💻 Bitwise Conversions
-JavaScript bitwise operations treat operands as 32-bit signed integers. When dealing with IP addresses, we must treat them as *unsigned* to prevent negative numbers breaking the string conversion or math. This is why `>>> 0` (zero-fill right shift by 0) is heavily used; it forces JS to treat the number as an unsigned 32-bit integer.
+### Bitwise Conversions
+JavaScript native bitwise operations process 32-bit signed integers. IP address processing mandates *unsigned* integers to prevent data corruption during string conversions. The zero-fill right shift (`>>> 0`) forces the engine to treat the output as an unsigned 32-bit integer.
 
 ```javascript
 function ipToInt(ipStr) {
     return ipStr.split('.').reduce((acc, octet) => (acc << 8) + parseInt(octet, 10), 0) >>> 0;
 }
 ```
-This reduces an array like `["192", "168", "1", "1"]` by shifting the accumulator left by 8 bits (1 byte) for each new octet, converting the entire IP into a single continuous 32-bit number.
+This sequential reduction shifts the accumulator left by 8 bits (1 byte) per octet, compressing the sequence into a unified 32-bit value.
 
-### 🎭 Mask Parsing
-The `parseMask` function intelligently decides if the user typed a CIDR or a standard mask. If it's a standard mask, it converts it to an integer, flips the bits to get the host portion (`~maskInt`), then checks how many bits are used.
+### Mask Parsing
+The `parseMask` function identifies the input notation. Dot-decimal masks are converted to integers, inverted (`~maskInt`), and processed to determine bit utilization.
 
-### 🧮 The Calculation Engine
-Once we have the IP as an integer and the network mask as an integer, finding the network is straightforward:
+### Calculation Engine
+With inputs normalized to integer states, network resolution executes immediately:
 ```javascript
 const networkInt = (ipInt & maskInt) >>> 0;
 ```
-To find the broadcast, we take the network bits and flip all the remaining host bits to `1` using an OR operation and the inverse mask:
+Broadcast resolution executes by flipping host bits to `1` against the inverse mask:
 ```javascript
 const broadcastInt = ((networkInt | ~maskInt) >>> 0);
 ```
 
-### 📉 Edge Case Handling
-Normally, usable hosts are calculated as $2^{hosts} - 2$, subtracting the network and broadcast addresses. However, RFC 3021 allows `/31` to be used for point-to-point links, where both addresses are usable (no dedicated network or broadcast addresses exist). `/32` represents a single specific host. We handle these to ensure accurate display.
+### Edge Case Handling
+Standard usable host capacity utilizes $2^{hosts} - 2$. However, RFC 3021 specifies `/31` usage for point-to-point links (two usable addresses, no dedicated network/broadcast). `/32` specifies a single absolute host. The engine overrides standard calculation states for these parameters.
 
 ```javascript
 if (cidr === 32) {
@@ -84,4 +84,4 @@ if (cidr === 32) {
 ```
 
 > [!WARNING]
-> **Disclaimer:** This Vicodex subnet calculator is for educational purposes only. It can be accessed at [here](https://vicode-x.github.io/vicodex_calculator/)
+> System restricted to educational parameters. Access initialized at [Vicodex Calculator Target](https://vicode-x.github.io/vicodex_calculator/).
